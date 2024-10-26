@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.amap.api.location.AMapLocationClient;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,9 +16,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        AMapLocationClient.updatePrivacyShow(this, true, true);
+//        AMapLocationClient.updatePrivacyAgree(this, true);
+
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("运动"));
-        tabLayout.addTab(tabLayout.newTab().setText("成就"));
+        tabLayout.addTab(tabLayout.newTab().setText("记录"));
 
         // 默认加载界面
         loadFragment(new RunFragment());
@@ -28,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
                     case 0: // 运动
                         loadFragment(new RunFragment());
                         break;
-                    case 1: // 成就
-                        loadFragment(new AchievementFragment());
+                    case 1: // 记录
+                        loadFragment(new RecordFragment());
                         break;
                 }
             }

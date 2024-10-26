@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,9 +29,12 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.model.MyLocationStyle;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import retrofit2.Call;
 
 public class RunFragment extends Fragment implements AMapLocationListener {
     private MapView mapView;
@@ -48,6 +52,10 @@ public class RunFragment extends Fragment implements AMapLocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_run, container, false);
+
+        AMapLocationClient.updatePrivacyShow(requireContext(), true, true);
+        AMapLocationClient.updatePrivacyAgree(requireContext(), true);
+
         mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
 
@@ -129,8 +137,57 @@ public class RunFragment extends Fragment implements AMapLocationListener {
         locationClient.stopLocation();
         handler.removeCallbacks(updateRunnable);
 
-        Toast.makeText(getContext(), "停止运动记录", Toast.LENGTH_SHORT).show();
+        // 获取运动记录数据
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        String runTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date());
+        double distance = calculateDistance();
+        double speed = Double.parseDouble(calculateSpeed(elapsedTime, distance));
+
+        // 创建跑步记录实体
+        RunRecordEntity runRecordEntity = new RunRecordEntity();
+        runRecordEntity.runTime = runTime;
+        runRecordEntity.duration = elapsedTime;
+        runRecordEntity.speed = speed;
+        //runRecordEntity.distance = distance; // 设置路程
+
+        // 插入数据库
+        new Thread(() -> {
+            AppDatabase db = AppDatabase.getInstance(getContext());
+            db.runRecordDao().insert(runRecordEntity);
+
+            // 发送到后端
+            ApiService apiService = RetrofitClient.getRetrofitInstance().create(ApiService.class);
+            Call<Void> call = apiService.saveRunRecord(runRecordEntity);
+            call.enqueue(new retrofit2.Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "已添加记录到后端", Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        // 处理错误
+                        getActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "无法添加记录到后端", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    // 处理失败
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+        }).start();
+
+        //Toast.makeText(getContext(), "停止运动记录", Toast.LENGTH_SHORT).show();
     }
+
+
+
 
     private Runnable updateRunnable = new Runnable() {
         @Override
