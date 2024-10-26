@@ -28,7 +28,7 @@ public class RunRecordAdapter extends RecyclerView.Adapter<RunRecordAdapter.View
         holder.runTimeTextView.setText("时间: " + record.runTime);
         holder.durationTextView.setText("时长: " + record.duration / 1000 + "秒");
         holder.speedTextView.setText("速度: " + record.speed + "分钟/千米");
-        //holder.distanceTextView.setText("路程: " + record.distance + "米");
+        holder.distanceTextView.setText("路程: " + record.distance + "米");
     }
 
 
@@ -38,14 +38,14 @@ public class RunRecordAdapter extends RecyclerView.Adapter<RunRecordAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView runTimeTextView, durationTextView, speedTextView/*, distanceTextView*/;
+        TextView runTimeTextView, durationTextView, speedTextView, distanceTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
             runTimeTextView = itemView.findViewById(R.id.run_time);
             durationTextView = itemView.findViewById(R.id.duration);
             speedTextView = itemView.findViewById(R.id.speed);
-            //distanceTextView = itemView.findViewById(R.id.distance);
+            distanceTextView = itemView.findViewById(R.id.distance);
         }
     }
 }

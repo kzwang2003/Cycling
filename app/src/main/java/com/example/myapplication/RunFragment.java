@@ -148,7 +148,7 @@ public class RunFragment extends Fragment implements AMapLocationListener {
         runRecordEntity.runTime = runTime;
         runRecordEntity.duration = elapsedTime;
         runRecordEntity.speed = speed;
-        //runRecordEntity.distance = distance; // 设置路程
+        runRecordEntity.distance = distance; // 设置路程
 
         // 插入数据库
         new Thread(() -> {
@@ -215,7 +215,10 @@ public class RunFragment extends Fragment implements AMapLocationListener {
         for (int i = 1; i < pathPoints.size(); i++) {
             totalDistance += calculateDistanceBetween(pathPoints.get(i - 1), pathPoints.get(i));
         }
-        return totalDistance;
+
+        // 格式化为两位小数并返回
+        DecimalFormat df = new DecimalFormat("#.00");
+        return Double.parseDouble(df.format(totalDistance));
     }
 
     private double calculateDistanceBetween(LatLng start, LatLng end) {

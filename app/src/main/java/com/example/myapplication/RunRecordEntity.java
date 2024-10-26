@@ -11,5 +11,5 @@ public class RunRecordEntity {
     public String runTime;
     public long duration; // 跑步时长（毫秒）
     public double speed; // 速度（分钟/千米）
-    //public double distance; // 路程（米）
+    public double distance; // 路程（米）
 }
