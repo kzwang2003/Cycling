@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.icu.text.DecimalFormat;
 import android.icu.text.SimpleDateFormat;
 import android.location.Location;
 import android.os.Bundle;
@@ -120,7 +121,7 @@ public class RunFragment extends Fragment implements AMapLocationListener {
             locationClient.startLocation();
 
             isTracking = true;
-            startButton.setText("结束跑步");
+            startButton.setText("结束运动");
             startTime = System.currentTimeMillis();
             pathPoints.clear(); // 清除之前的路径点
             handler.post(updateRunnable);
@@ -133,7 +134,7 @@ public class RunFragment extends Fragment implements AMapLocationListener {
 
     private void stopTracking() {
         isTracking = false;
-        startButton.setText("开始跑步");
+        startButton.setText("开始运动");
         locationClient.stopLocation();
         handler.removeCallbacks(updateRunnable);
 
@@ -196,7 +197,7 @@ public class RunFragment extends Fragment implements AMapLocationListener {
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 timeTextView.setText("时间: " + formatTime(elapsedTime));
                 double distance = calculateDistance();
-                distanceTextView.setText("距离: " + String.format("%.2f", distance) + " 米");
+                distanceTextView.setText("路程: " + String.format("%.2f", distance) + " 米");
                 speedTextView.setText("速度: " + calculateSpeed(elapsedTime, distance) + " 分钟/千米"); // 显示速度
                 handler.postDelayed(this, 1000);
             }

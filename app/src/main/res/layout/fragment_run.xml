@@ -8,7 +8,7 @@
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开始跑步"
+        android:text="开始运动"
         android:layout_gravity="center" />
 
     <com.amap.api.maps.MapView
