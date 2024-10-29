@@ -178,7 +178,7 @@ public class RunFragment extends Fragment implements AMapLocationListener {
                 public void onFailure(Call<Void> call, Throwable t) {
                     // 处理失败
                     getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
                     });
                 }
             });
